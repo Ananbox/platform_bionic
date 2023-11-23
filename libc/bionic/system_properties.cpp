@@ -290,10 +290,16 @@ static prop_area* map_fd_ro(const int fd) {
         return nullptr;
     }
 
+    // ananbox: bypass st.uid & st_gid checks
+#if 0
     if ((fd_stat.st_uid != 0)
             || (fd_stat.st_gid != 0)
             || ((fd_stat.st_mode & (S_IWGRP | S_IWOTH)) != 0)
             || (fd_stat.st_size < static_cast<off_t>(sizeof(prop_area))) ) {
+#else
+    if (((fd_stat.st_mode & (S_IWGRP | S_IWOTH)) != 0)
+            || (fd_stat.st_size < static_cast<off_t>(sizeof(prop_area))) ) {
+#endif
         return nullptr;
     }
 
